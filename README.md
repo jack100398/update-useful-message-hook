@@ -8,9 +8,14 @@ $ composer config repositories.packagist.org false
 $ composer require update-useful/message-hook
 ```
 
-in config/app.php providers add
+in `config/app.php` providers add
 ```php
 UpdateUseful\MessageHook\MessageHookServiceProvider::class
+```
+
+in `.env` file add
+```
+UPGRADE_HOOK_URL="https://your.hook.url"
 ```
 
 **呼叫指令**

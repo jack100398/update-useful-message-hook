@@ -67,7 +67,7 @@ class MessageHookController extends Controller
             }
         }
 
-        $message = 'No Such Commit To Show On Target Tag';
+        $message = "準備更新{$this->env_name}環境, 沒有對應標籤";
         if ($real_tags->isNotEmpty()) {
             $real_tags = $real_tags->take(2);
             $new_tag = $real_tags->first();
