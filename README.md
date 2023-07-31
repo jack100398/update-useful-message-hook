@@ -2,6 +2,12 @@
 
 **install**
 
+```
+$ composer config repositories.private-packagist composer https://repo.packagist.com/josh-chen/
+$ composer config repositories.packagist.org false
+$ composer require update-useful/message-hook
+```
+
 in config/app.php providers add
 ```php
 UpdateUseful\MessageHook\MessageHookServiceProvider::class
