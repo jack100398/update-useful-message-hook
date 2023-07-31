@@ -2,9 +2,7 @@
     "name": "update-useful/message-hook",
     "description": "out different commit message between two tags",
     "type": "library",
-    "require": {
-        "php": "^8"
-    },
+    "require": {},
     "license": "MIT",
     "autoload": {
         "psr-4": {
