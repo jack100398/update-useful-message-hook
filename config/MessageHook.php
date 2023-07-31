@@ -18,5 +18,5 @@ return [
             'name'   => '正式環境'
         ],
     ],
-    'url' => 'https://mm.mgmt.168tech.vip/hooks/efbxj8mnefd45no4fwy9q74m3r'
+    'url' => env('UPGRADE_HOOK_URL', 'https://mm.mgmt.168tech.vip/hooks/efbxj8mnefd45no4fwy9q74m3r') 
 ];

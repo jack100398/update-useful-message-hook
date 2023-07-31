@@ -12,7 +12,7 @@ class SendVersionMessageCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'update {target : 指定站台 預設為 (develop/cron/staging/master)}';
+    protected $signature = 'upgrade {target : 指定站台 預設為 (develop/cron/staging/master)}';
 
     protected array $settings = [];
     

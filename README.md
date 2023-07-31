@@ -1,11 +1,18 @@
 # ReadMe
 
+**install**
+
+in config/app.php providers add
+```php
+UpdateUseful\MessageHook\MessageHookServiceProvider::class
+```
+
 **呼叫指令**
 ```
-$ php artisan update develop
-$ php artisan update staging
-$ php artisan update cron
-$ php artisan update master
+$ php artisan upgrade develop
+$ php artisan upgrade staging
+$ php artisan upgrade cron
+$ php artisan upgrade master
 ```
 
 **客製化設定檔**
