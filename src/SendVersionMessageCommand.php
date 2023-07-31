@@ -12,7 +12,7 @@ class SendVersionMessageCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'send:version.message {--target= : 指定站台 預設為 (develop/cron/staging/master)}';
+    protected $signature = 'update {target : 指定站台 預設為 (develop/cron/staging/master)}';
 
     protected array $settings = [];
     
@@ -48,7 +48,7 @@ class SendVersionMessageCommand extends Command
     {
         $this->settings = CommonHelper::getEnvSettings();
 
-        $this->target = $this->option('target');
+        $this->target = $this->argument('target');
 
         if (! Arr::has($this->settings, $this->target)) {
             $setting_tip = collect($this->settings)->keys()->join('/');

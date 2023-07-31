@@ -67,25 +67,28 @@ class MessageHookController extends Controller
             }
         }
 
-        $real_tags = $real_tags->take(2);
-        $new_tag = $real_tags->first();
-        $previous_tag = $real_tags->last();
-
-        $commits = explode("\n", $this->getDiffCommit($new_tag['commit'], $previous_tag['commit']));
-
-        $real_commits = [];
-
-        foreach ($commits as $commit) {
-            if (strpos($commit, 'Merge') || $commit === '') {
-                continue;
+        $message = 'No Such Commit To Show On Target Tag';
+        if ($real_tags->isNotEmpty()) {
+            $real_tags = $real_tags->take(2);
+            $new_tag = $real_tags->first();
+            $previous_tag = $real_tags->last();
+    
+            $commits = explode("\n", $this->getDiffCommit($new_tag['commit'], $previous_tag['commit']));
+    
+            $real_commits = [];
+    
+            foreach ($commits as $commit) {
+                if (strpos($commit, 'Merge') || $commit === '') {
+                    continue;
+                }
+    
+                $real_commits[] = mb_substr(string: $commit, start: 8, encoding: 'utf8');
             }
 
-            $real_commits[] = mb_substr(string: $commit, start: 8, encoding: 'utf8');
+            $updated_commits = implode("\n", $real_commits);
+    
+            $message = "準備更新{$this->env_name}環境 \n版號: {$new_tag['version']} \n更新內容：\n{$updated_commits}";
         }
-        //
-        $updated_commits = implode("\n", $real_commits);
-
-        $message = "準備更新{$this->env_name}環境 \n版號: {$new_tag['version']} \n更新內容：\n{$updated_commits}";
 
         $this->sendWebHook($message);
     }
