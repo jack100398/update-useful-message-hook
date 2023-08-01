@@ -1,23 +1,20 @@
 {
-    "name": "update-useful/message-hook",
-    "description": "out different commit message between two tags",
-    "type": "library",
-    "require": {},
+    "name": "168tech/upgrade-tool",
+    "description": "輸出版本更新資訊",
+    "require": {
+        "php": ">=8.0"
+    },
     "license": "MIT",
     "autoload": {
         "psr-4": {
-            "UpdateUseful\\MessageHook\\": "src"
+            "XinYin\\upgrade-tool\\": "src"
         }
     },
-    "repositories": {
-        "packagist.org": false,
-        "private-packagist": {
-            "type": "composer",
-            "url": "https://repo.packagist.com/josh-chen/"
-        },
-        "packagist": {
-            "type": "composer",
-            "url": "https://packagist.org/"
+    "extra": {
+        "laravel": {
+            "providers": [
+                "XinYin\\upgrade-tool\\MessageHookServiceProvider"
+            ]
         }
     }
 }
