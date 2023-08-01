@@ -8,11 +8,6 @@ $ composer config repositories.packagist.org false
 $ composer require update-useful/message-hook
 ```
 
-in `config/app.php` providers add
-```php
-UpdateUseful\MessageHook\MessageHookServiceProvider::class
-```
-
 in `.env` file add
 ```
 UPGRADE_HOOK_URL="https://your.hook.url"
@@ -29,6 +24,10 @@ $ php artisan upgrade master
 **客製化設定檔**
 ```
 $ cp vendor/update-useful/message-hook/config/MessageHook.php config/CustomMessageHook.php
+```
+or
+```
+$ php artisan vendor:publish --provider="XinYin\upgrade-tool\MessageHookServiceProvider" --tag="config"
 ```
 
 ## 設定檔說明

@@ -23,9 +23,16 @@ class MessageHookServiceProvider extends ServiceProvider
     {
         $this->registerDefaultSettingConfig();
 
+        $this->setPublishFile();
+
         $this->commands(SendVersionMessageCommand::class);
     }
 
+    /**
+     * 註冊預設設定檔
+     *
+     * @return void
+     */
     protected function registerDefaultSettingConfig(): void
     {
         $source = realpath($raw = __DIR__.'/../config/MessageHook.php') ?: $raw;
@@ -37,5 +44,16 @@ class MessageHookServiceProvider extends ServiceProvider
         }
 
         $this->mergeConfigFrom($source, 'MessageHook');
+    }
+
+    /**
+     * 發布設定檔設定
+     *
+     * @return void
+     */
+    protected function setPublishFile(): void
+    {
+        $this->publishes([__DIR__ . '/../config/MessageHook.php' => config_path('CustomMessageHook.php'),], 'config');
+        $this->mergeConfigFrom(__DIR__ . '/../config/MessageHook.php', 'CustomMessageHook');
     }
 }
