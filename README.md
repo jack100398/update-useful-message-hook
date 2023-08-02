@@ -3,9 +3,7 @@
 **install**
 
 ```
-$ composer config repositories.private-packagist composer https://repo.packagist.com/josh-chen/
-$ composer config repositories.packagist.org false
-$ composer require update-useful/message-hook
+$ composer require 168tech/cicd-status-publisher
 ```
 
 in `.env` file add
@@ -22,10 +20,6 @@ $ php artisan upgrade master
 ```
 
 **客製化設定檔**
-```
-$ cp vendor/update-useful/message-hook/config/MessageHook.php config/CustomMessageHook.php
-```
-or
 ```
 $ php artisan vendor:publish --provider="XinYin\upgrade-tool\MessageHookServiceProvider" --tag="config"
 ```
