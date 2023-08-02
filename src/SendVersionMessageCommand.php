@@ -1,9 +1,10 @@
 <?php
 
-namespace UpdateUseful\MessageHook;
+namespace XinYin\UpgradeTool;
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Arr;
+use XinYin\UpgradeTool\Helper\CommonHelper;
 
 class SendVersionMessageCommand extends Command
 {

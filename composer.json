@@ -1,5 +1,5 @@
 {
-    "name": "168tech/upgrade-tool",
+    "name": "168tech/cicd-status-publisher",
     "description": "輸出版本更新資訊",
     "require": {
         "php": ">=8.0"
@@ -7,13 +7,13 @@
     "license": "MIT",
     "autoload": {
         "psr-4": {
-            "XinYin\\upgrade-tool\\": "src"
+            "XinYin\\UpgradeTool\\": "src"
         }
     },
     "extra": {
         "laravel": {
             "providers": [
-                "XinYin\\upgrade-tool\\MessageHookServiceProvider"
+                "XinYin\\UpgradeTool\\MessageHookServiceProvider"
             ]
         }
     }

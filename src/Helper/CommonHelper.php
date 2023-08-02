@@ -1,6 +1,6 @@
 <?php
 
-namespace UpdateUseful\MessageHook;
+namespace XinYin\UpgradeTool\Helper;
 
 use Illuminate\Support\Facades\Config;
 

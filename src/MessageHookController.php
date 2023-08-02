@@ -1,9 +1,10 @@
 <?php
 
-namespace UpdateUseful\MessageHook;
+namespace XinYin\UpgradeTool;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Arr;
+use XinYin\UpgradeTool\Helper\CommonHelper;
 
 class MessageHookController extends Controller
 {
@@ -90,7 +91,11 @@ class MessageHookController extends Controller
             $message = "準備更新{$this->env_name}環境 \n版號: {$new_tag['version']} \n更新內容：\n{$updated_commits} \n";
         }
 
-        echo str_replace('\n', PHP_EOL, $message);
+        $message = str_replace('\n', PHP_EOL, $message);
+
+        echo $message;
+
+        shell_exec("echo '{$message}' | pbcopy");
 
         $this->sendWebHook($message);
     }
