@@ -53,7 +53,7 @@ class MessageHookServiceProvider extends ServiceProvider
      */
     protected function setPublishFile(): void
     {
-        $this->publishes([__DIR__ . '/../config/MessageHook.php' => config_path('CustomMessageHook.php'),], 'config');
-        $this->mergeConfigFrom(__DIR__ . '/../config/MessageHook.php', 'CustomMessageHook');
+        $this->publishes([__DIR__ . '/../config/MessageHook.php' => config_path('custommessagehook.php'),], 'config');
+        $this->mergeConfigFrom(__DIR__ . '/../config/MessageHook.php', 'custommessagehook');
     }
 }

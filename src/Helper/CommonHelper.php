@@ -13,7 +13,7 @@ class CommonHelper
      */
     public static function getEnvSettings(): array
     {
-        return Config::get('CustomMessageHook.env', Config::get('MessageHook.env'));
+        return Config::get('custommessagehook.env', Config::get('MessageHook.env'));
     }
 
     /**
@@ -21,6 +21,6 @@ class CommonHelper
      */
     public static function getUrlSettings(): string
     {
-        return Config::get('CustomMessageHook.url', Config::get('MessageHook.url'));
+        return Config::get('custommessagehook.url', Config::get('MessageHook.url'));
     }
 }
