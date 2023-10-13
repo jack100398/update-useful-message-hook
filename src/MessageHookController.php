@@ -4,6 +4,7 @@ namespace XinYin\UpgradeTool;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Collection;
 use XinYin\UpgradeTool\Helper\CommonHelper;
 
 class MessageHookController extends Controller
@@ -48,47 +49,23 @@ class MessageHookController extends Controller
         $output = shell_exec('git for-each-ref --sort=creatordate --format="%(refname) %(objectname)" refs/tags');
 
         // 取得最新的tag
-        $tags = explode("\n", $output);
-
-        $real_tags = collect();
-        foreach ($tags as $tag) {
-            if ($tag === '') continue;
-
-            $tag = str_replace('refs/tags/', '', $tag);
-
-            $tag = substr($tag, 0, -32);
-
-            [$version, $commit] = explode(' ', $tag);
-
-            if ($this->isNeedsTag($version)) {
-                $real_tags->prepend([
-                    'version' => $version,
-                    'commit' => $commit
-                ]);
-            }
-        }
+        $tags = collect(explode("\n", $output))
+            ->filter()
+            ->map(fn ($tag) => $this->formatTag($tag))
+            ->sortByDesc('version')
+            ->unique('commit');
 
         $message = "準備更新{$this->env_name}環境, 沒有對應標籤";
-        if ($real_tags->isNotEmpty()) {
-            $real_tags = $real_tags->take(2);
-            $new_tag = $real_tags->first();
-            $previous_tag = $real_tags->last();
-    
-            $commits = explode("\n", $this->getDiffCommit($new_tag['commit'], $previous_tag['commit']));
-    
-            $real_commits = [];
-    
-            foreach ($commits as $commit) {
-                if (strpos($commit, 'Merge') || $commit === '') {
-                    continue;
-                }
-    
-                $real_commits[] = mb_substr(string: $commit, start: 8, encoding: 'utf8');
-            }
+        if ($tags->isNotEmpty()) {
+            $latest_version = $this->pluckLatestVersion($tags);
+            $commits = $this->getCommitMessage($tags);
 
-            $updated_commits = implode("\n", $real_commits);
+            $updated_commits = $commits
+                            ->reject(fn (string $commit) => $this->isShouldFilteredCommit($commit))
+                            ->map(fn (string $commit) => mb_substr(string: $commit, start: 8, encoding: 'utf8'))
+                            ->join("\n");
     
-            $message = "準備更新{$this->env_name}環境 \n版號: {$new_tag['version']} \n更新內容：\n{$updated_commits} \n";
+            $message = "準備更新{$this->env_name}環境 \n版號: {$latest_version} \n更新內容：\n{$updated_commits} \n";
         }
 
         $message = str_replace('\n', PHP_EOL, $message);
@@ -98,6 +75,67 @@ class MessageHookController extends Controller
         shell_exec("echo '{$message}' | pbcopy");
 
         $this->sendWebHook($message);
+    }
+
+    /**
+     * 獲得commit訊息
+     *
+     * @param Collection $tags
+     *
+     * @return Collection
+     */
+    protected function getCommitMessage(Collection $tags): Collection
+    {
+        $real_tags = $tags->take(2);
+        $new_tag = $real_tags->first();
+        $previous_tag = $real_tags->last();
+
+        return collect(explode("\n", $this->getDiffCommit($new_tag['commit'], $previous_tag['commit'])));
+    }
+
+    /**
+     * 獲得最新版本號
+     *
+     * @param Collection $tags
+     *
+     * @return string
+     */
+    protected function pluckLatestVersion(Collection $tags): string
+    {
+        return $tags->first()['version'];
+    }
+
+    /**
+     * 是否為需要被篩選掉的commit
+     *
+     * @param string $commit
+     *
+     * @return bool
+     */
+    protected function isShouldFilteredCommit(string $commit): bool
+    {
+        return strpos($commit, 'Merge') || $commit === '';
+    }
+
+    /**
+     * 格式化tag內的資料
+     *
+     * @param string $tag
+     *
+     * @return array
+     */
+    protected function formatTag(string $tag): array
+    {
+        $tag = str_replace('refs/tags/', '', $tag);
+
+        $tag = substr($tag, 0, -32);
+
+        [$version, $commit] = explode(' ', $tag);
+
+        return [
+            'version' => $version,
+            'commit'  => $commit
+        ];
     }
 
     /**
@@ -113,13 +151,14 @@ class MessageHookController extends Controller
         if ($last_commit === $previous_commit) {
             return shell_exec("git log {$last_commit} --oneline");
         }
+
         return shell_exec("git log {$last_commit}...{$previous_commit} --oneline");
     }
 
     /**
      * 篩選版本是否為需要部署的環境的tag
      *
-     * @param string
+     * @param string $version
      *
      * @return bool
      */
@@ -130,6 +169,19 @@ class MessageHookController extends Controller
         } else {
             return ! (strpos($version, $this->symbol) === false);
         }
+    }
+
+    /**
+     * 是否為重複的commit tag
+     *
+     * @param Collection $tags
+     * @param string $commit
+     *
+     * @return bool
+     */
+    protected function isRepeatedCommit(Collection $tags, string $commit)
+    {
+        return $tags->filter(fn ($tag) => $tag['commit'] === $commit)->count() > 0;
     }
 
     /**
