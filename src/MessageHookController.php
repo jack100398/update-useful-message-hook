@@ -52,6 +52,7 @@ class MessageHookController extends Controller
         $tags = collect(explode("\n", $output))
             ->filter()
             ->map(fn ($tag) => $this->formatTag($tag))
+            ->filter(fn ($tag) => $this->isNeedsTag($tag['version']))
             ->sortByDesc('version')
             ->unique('commit');
 
@@ -148,6 +149,7 @@ class MessageHookController extends Controller
      */
     protected function getDiffCommit(string $last_commit, string $previous_commit): string
     {
+        dd($last_commit);
         if ($last_commit === $previous_commit) {
             return shell_exec("git log {$last_commit} --oneline");
         }
@@ -160,7 +162,7 @@ class MessageHookController extends Controller
      *
      * @param string $version
      *
-     * @return bool
+     * @return boolq
      */
     protected function isNeedsTag(string $version): bool
     {
