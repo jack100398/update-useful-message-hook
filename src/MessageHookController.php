@@ -53,7 +53,7 @@ class MessageHookController extends Controller
             ->filter()
             ->map(fn ($tag) => $this->formatTag($tag))
             ->filter(fn ($tag) => $this->isNeedsTag($tag['version']))
-            ->sortByDesc('version')
+            ->reverse('version')
             ->unique('commit');
 
         $message = "準備更新{$this->env_name}環境, 沒有對應標籤";
@@ -63,7 +63,7 @@ class MessageHookController extends Controller
 
             $updated_commits = $commits
                             ->reject(fn (string $commit) => $this->isShouldFilteredCommit($commit))
-                            ->map(fn (string $commit) => mb_substr(string: $commit, start: 8, encoding: 'utf8'))
+                            ->map(fn (string $commit) => mb_substr(string: $commit, start: 9, encoding: 'utf8'))
                             ->join("\n");
     
             $message = "準備更新{$this->env_name}環境 \n版號: {$latest_version} \n更新內容：\n{$updated_commits} \n";
@@ -130,7 +130,7 @@ class MessageHookController extends Controller
         $tag = str_replace('refs/tags/', '', $tag);
 
         $tag = substr($tag, 0, -32);
-
+        
         [$version, $commit] = explode(' ', $tag);
 
         return [
@@ -195,6 +195,14 @@ class MessageHookController extends Controller
     {
         $curl = curl_init();
 
+        $message = ['text' => $text];
+
+        if (CommonHelper::getShouldThreadSettings()) {
+            $message['thread'] = [
+                'threadKey' => CommonHelper::getThreadSettings()
+            ];
+        }
+
         curl_setopt_array($curl, [
             CURLOPT_URL => CommonHelper::getUrlSettings(),
             CURLOPT_RETURNTRANSFER => true,
@@ -204,12 +212,12 @@ class MessageHookController extends Controller
             CURLOPT_FOLLOWLOCATION => true,
             CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
             CURLOPT_CUSTOMREQUEST => 'POST',
-            CURLOPT_POSTFIELDS => '{"text": "' . $text . '"}',
+            CURLOPT_POSTFIELDS => json_encode($message),
             CURLOPT_HTTPHEADER => ['Content-Type: application/json'],
         ]);
-
+    
         $response = curl_exec($curl);
-
+    
         curl_close($curl);
         echo $response;
     }
