@@ -149,7 +149,6 @@ class MessageHookController extends Controller
      */
     protected function getDiffCommit(string $last_commit, string $previous_commit): string
     {
-        dd($last_commit);
         if ($last_commit === $previous_commit) {
             return shell_exec("git log {$last_commit} --oneline");
         }
