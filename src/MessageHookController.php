@@ -161,7 +161,7 @@ class MessageHookController extends Controller
      *
      * @param string $version
      *
-     * @return boolq
+     * @return bool
      */
     protected function isNeedsTag(string $version): bool
     {
