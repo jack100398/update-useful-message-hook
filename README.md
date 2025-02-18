@@ -1,32 +1,10 @@
 # ReadMe
 
+**效果**
+<img width="570" alt="image" src="https://github.com/user-attachments/assets/82e1faf3-446b-44e9-b2b9-08ffe4563fed" />
+
+
 **install**
-
-*引入*
-
-in composer.json
-```json
-"repositories" : [
-        { 
-            "url" :"https://gitlab.mgmt.168tech.vip/api/v4/group/23/-/packages/composer/packages.json",
-            "type" :"composer"
-        }
-    ],
-
-```
-*建立Token*
-
-![Alt text](image.png)
-
-將 token 寫入 composer config
-```
-$ composer config -g gitlab-token.<DOMAIN-NAME> <personal_access_token> (global)
-```
-
-*套件安裝*
-```
-$ composer require 168tech/cicd-status-publisher
-```
 ---
 **自定義發送訊息Hook**
 
